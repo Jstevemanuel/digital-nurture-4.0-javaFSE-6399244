@@ -1,0 +1,44 @@
+-- Drop tables if they exist
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE Loans';
+  EXECUTE IMMEDIATE 'DROP TABLE Customers';
+EXCEPTION
+  WHEN OTHERS THEN
+    NULL; -- Ignore errors if tables don't exist
+END;
+/
+
+-- Create Customers table
+CREATE TABLE Customers (
+  CustomerID     NUMBER PRIMARY KEY,
+  CustomerName   VARCHAR2(100),
+  Age            NUMBER,
+  Balance        NUMBER(10,2),
+  LoanInterest   NUMBER(5,2),
+  IsVIP          VARCHAR2(5)
+);
+
+-- Create Loans table
+CREATE TABLE Loans (
+  LoanID         NUMBER PRIMARY KEY,
+  CustomerID     NUMBER,
+  DueDate        DATE,
+  FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+-- Insert sample data into Customers
+INSERT INTO Customers VALUES (1, 'John Smith', 65, 15000, 6.5, 'FALSE');
+INSERT INTO Customers VALUES (2, 'Mary Johnson', 45, 9500, 7.0, 'FALSE');
+INSERT INTO Customers VALUES (3, 'Peter Adams', 70, 11000, 5.5, 'FALSE');
+INSERT INTO Customers VALUES (4, 'Lucy Brown', 30, 12000, 8.0, 'FALSE');
+INSERT INTO Customers VALUES (5, 'David Lee', 55, 8000, 6.0, 'FALSE');
+
+-- Insert sample data into Loans
+INSERT INTO Loans VALUES (101, 1, SYSDATE + 15); -- Due soon
+INSERT INTO Loans VALUES (102, 2, SYSDATE + 40); -- Not due soon
+INSERT INTO Loans VALUES (103, 3, SYSDATE + 10); -- Due soon
+INSERT INTO Loans VALUES (104, 4, SYSDATE + 25); -- Due soon
+INSERT INTO Loans VALUES (105, 5, SYSDATE + 50); -- Not due soon
+
+-- Commit the changes
+COMMIT;
